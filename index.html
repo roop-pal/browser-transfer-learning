@@ -5,7 +5,6 @@
   </head>
 
   <body>
-    <button>Upload</button>
     <button>Train</button>
     <button id="pred_button">Predict</button>
     <input type="file" id="predict", style="display: none;"></input>
@@ -13,6 +12,7 @@
     <img id = 'predict_image' src="" height="200" alt="Image preview...">
     <br>
     <div id="pred_output"></div>
+    <img id="img" crossOrigin src="https://i.imgur.com/JlUvsxa.jpg" width=227 height=227/>
   </body>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
