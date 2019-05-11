@@ -5,14 +5,17 @@
   </head>
 
   <body>
-    <button>Upload</button>
-    <button>Train</button>
+    <button id='train_button'>Train</button>
+    <input type="file" id="train", style="display: none;"></input>
+
     <button id="pred_button">Predict</button>
     <input type="file" id="predict", style="display: none;"></input>
     <br>
     <img id = 'predict_image' src="" height="200" alt="Image preview...">
     <br>
+
     <div id="pred_output"></div>
+    <img id="img" crossOrigin src="https://i.imgur.com/JlUvsxa.jpg" width=227 height=227/>
   </body>
 
   <!-- zip.js  -->

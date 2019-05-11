@@ -1,9 +1,46 @@
 let predict = document.getElementById("predict");
 let predict_button = document.getElementById("pred_button")
 
+let net;
+
+async function app() {
+  console.log('Loading mobilenet..');
+
+  // Load the model.
+  net = await mobilenet.load();
+  console.log('Sucessfully loaded model');
+}
+
+app();
+
+///////////////////////////////////////////////////////////////////////////////
+//                                  TRAIN                                    //
+///////////////////////////////////////////////////////////////////////////////
+
+train_button.addEventListener("click", ()=>{
+    document.getElementById('train').click();
+});
+
+train.addEventListener("change", ()=>{
+    var zip = new JSZip();
+    // read zip file
+    zip.loadAsync( document.querySelector('input[type=file]').files[0] /* = file blob */)
+       .then(function(zip) {
+           // process ZIP file content here
+
+           // iterate through
+           console.log(zip.files)
+
+           // alert("OK")
+       }, function() {alert("Not a valid zip file")});
+});
+
+///////////////////////////////////////////////////////////////////////////////
+//                                 PREDICT                                   //
+///////////////////////////////////////////////////////////////////////////////
+
 predict_button.addEventListener("click", ()=>{
     document.getElementById('predict').click();
-
 });
 
 predict.addEventListener("change", ()=>{
@@ -29,19 +66,16 @@ predict.addEventListener("change", ()=>{
     reader.onloadend = function () {
         img.src = reader.result;
         // Load the model.
-        mobilenet.load().then(model => {
-            // Classify the image.
-            model.classify(img).then(predictions => {
-            console.log('Predictions: ');
-            console.log(predictions);
-            pred = "";
-            for(let pred of predictions){
-                let p = document.createElement('p');
-                p.innerHTML = pred.className + " " + pred.probability;
-                document.getElementById("pred_output").appendChild(p);
-            }
+        net.classify(img).then(predictions => {
+        console.log('Predictions: ');
+        console.log(predictions);
+        pred = "";
+        for(let pred of predictions){
+            let p = document.createElement('p');
+            p.innerHTML = pred.className + " " + pred.probability;
+            document.getElementById("pred_output").appendChild(p);
+        }
 
-            });
         });
 
     }
