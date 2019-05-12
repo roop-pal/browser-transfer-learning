@@ -99,9 +99,13 @@ predict_button.addEventListener("click", ()=>{
 });
 
 predict.addEventListener("change", ()=>{
-    var file    = document.querySelector('input[type=file]').files[0];
+
     var reader  = new FileReader();
     var img = document.getElementById('predict_image');
+
+    if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
+    }
 
     reader.onloadend = function () {
         img.src = reader.result;
@@ -117,11 +121,9 @@ predict.addEventListener("change", ()=>{
         }
 
         });
-        
+
     }
 
-    if (file) {
-        reader.readAsDataURL(file); //reads the data as a URL
-    }
+
 
 });

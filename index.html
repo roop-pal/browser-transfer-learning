@@ -5,7 +5,8 @@
   </head>
 
   <body>
-
+    <button id='train_button'>Train</button>
+    <input type="file" id="train", style="display: none;"></input>
     <button id="addClass">Add Class</button>
     <table id="trainingData" style="width:100%" border="1">
       <tr>
@@ -21,11 +22,16 @@
     <br>
     <img id = 'predict_image' src="" height="200" alt="Image preview...">
     <br>
+
     <div id="pred_output"></div>
     <br>
 
   </body>
 
+  <!-- zip.js  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.0/jszip.js"></script>
+
+  <!-- tensorflow-related  -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
   <script src="index.js"></script>
