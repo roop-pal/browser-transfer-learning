@@ -98,18 +98,19 @@ predict.addEventListener("change", ()=>{
 
 let train_button = document.getElementById("train_button");
 let transferNet;
+let kClassifier;
 train_button.addEventListener("click", ()=>{
     console.log('Training...')
     console.log('Adding examples...')
     let xArray = [];
     let yArray = [];
-    const classifier = knnClassifier.create();
+    kClassifier = knnClassifier.create();
     for (let i = 0; i <= numClasses; i++) {
         for (let j of document.getElementById("list"+parseInt(i)).children) {
             const activation = net.infer(j.children[0], 'conv_preds');
-            xArray.push(activation.dataSync());
+            xArray.push(activation);
             yArray.push(i);
-            classifier.addExample(activation, i);
+            kClassifier.addExample(activation, i);
         }
     }
     const xDataset = tf.data.array(xArray);
@@ -119,15 +120,14 @@ train_button.addEventListener("click", ()=>{
 
     transferNet = tf.sequential({
         layers: [
-            tf.layers.dense({inputShape: [1024], units: 50, activation: 'relu'}),
-            // tf.layers.dense({units: 12, activation: 'relu'}),
-            // tf.layers.dense({units: 89, activation: 'relu'}),
+            tf.layers.dense({inputShape: [1024], units: 64, activation: 'relu'}),
+            tf.layers.dense({units: 32, activation: 'relu'}),
             tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
         ]
     });
-    transferNet.compile({optimizer: 'adam', loss: 'sparseCategoricalCrossentropy'});
+    transferNet.compile({optimizer: tf.train.adam(0.001), loss: 'sparseCategoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
-      epochs: 5,
+      epochs: 10,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
 });
