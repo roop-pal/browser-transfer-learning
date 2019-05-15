@@ -2,45 +2,28 @@ let net;
 
 let transferNet;
 
-async function app() {
-  console.log('Loading mobilenet..');
-
-  // Load the model.
-  net = await mobilenet.load();
-  console.log('Sucessfully loaded model');
-
-  // const imgEl = document.getElementById('img');
-  // const result = net.infer(imgEl);
-
-    // transferNet = tf.sequential({
-    //  layers: [
-    //    tf.layers.dense({inputShape: [1000], units: 32, activation: 'relu'}),
-    //    tf.layers.dense({units: 10, activation: 'softmax'}),
-    //  ]
-    // });
-
-  // const addExample = classId => {
-  //   // Get the intermediate activation of MobileNet 'conv_preds' and pass that
-  //   // to the KNN classifier.
-  //   const activation = net.infer(webcamElement, 'conv_preds');
-  //
-  //   // Pass the intermediate activation to the classifier.
-  //   classifier.addExample(activation, classId);
-  // };
-
-  // Make a prediction through the model on our image.
-  // console.log(result);
+async function init() {
+    console.log('Loading mobilenet...');
+    // Load the model.
+    net = await mobilenet.load();
+    console.log('Loaded model');
+    transferNet = tf.sequential({
+        layers: [
+            tf.layers.dense({inputShape: [1000], units: 32, activation: 'relu'}),
+            tf.layers.dense({units: 10, activation: 'softmax'}),
+        ]
+    });
 }
 
-app();
+init();
 
 
 let addClassButton = document.getElementById("addClass")
-let iiii = 0;
+let numClasses = 0;
 addClassButton.addEventListener("click", ()=>{
     var tbl = document.getElementById('trainingData'); // table reference
     // open loop for each row and append cell
-    iiii++;
+    numClasses++;
     createCell(tbl.rows[0].insertCell(tbl.rows[0].cells.length), 'col');
 });
 
@@ -50,7 +33,7 @@ addClassButton.addEventListener("click", ()=>{
 function createCell(cell, style) {
     var div = document.createElement('div'); // create DIV element
     //div.textContent = i;
-    div.innerHTML = '<input type="file" id="files-'+iiii.toString()+'" name="files[]" multiple /><output id="list'+iiii.toString()+'"></output>';
+    div.innerHTML = '<input type="file" id="files-'+numClasses.toString()+'" name="files[]" multiple /><output id="list'+numClasses.toString()+'"></output>';
     div.addEventListener('change', handleFileSelect, false);
     div.setAttribute('class', style);        // set DIV class attribute
     div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
@@ -79,7 +62,6 @@ function handleFileSelect(evt) {
                             '" title="', escape(theFile.name), '"/>'].join('');
 
           let id = 'list' + evt.target.id.substring(evt.target.id.search('-') + 1, evt.target.id.length)
-          console.log('id ' + id);
           document.getElementById(id).insertBefore(span, null);
         };
       })(f);
@@ -99,31 +81,44 @@ predict_button.addEventListener("click", ()=>{
 });
 
 predict.addEventListener("change", ()=>{
-
+    var file    = document.querySelector('input[type=file]').files[0];
     var reader  = new FileReader();
     var img = document.getElementById('predict_image');
-
-    if (file) {
-        reader.readAsDataURL(file); //reads the data as a URL
-    }
 
     reader.onloadend = function () {
         img.src = reader.result;
         // Load the model.
         net.classify(img).then(predictions => {
-        console.log('Predictions: ');
-        console.log(predictions);
-        pred = "";
-        for(let pred of predictions){
-            let p = document.createElement('p');
-            p.innerHTML = pred.className + " " + pred.probability;
-            document.getElementById("pred_output").appendChild(p);
-        }
-
+            console.log('Predictions: ');
+            console.log(predictions);
+            pred = "";
+            for(let pred of predictions){
+                let p = document.createElement('p');
+                p.innerHTML = pred.className + " " + pred.probability;
+                document.getElementById("pred_output").appendChild(p);
+            }
         });
-
+    }
+    if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
     }
 
+});
 
+let train_button = document.getElementById("train_button");
 
+train_button.addEventListener("click", ()=>{
+    console.log('Training...')
+    console.log('Adding examples...')
+    for (let i = 0; i <= numClasses; i++) {
+        for (let j of document.getElementById("list"+parseInt(i)).children) {
+            console.log(j.children[0]);
+            const activation = net.infer(j.children[0], 'conv_preds');
+
+            // Pass the intermediate activation to the classifier.
+
+            transferNet.addExample(activation, i);
+        }
+    }
+    console.log('Added examples');
 });
