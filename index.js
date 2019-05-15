@@ -119,13 +119,14 @@ train_button.addEventListener("click", ()=>{
 
     transferNet = tf.sequential({
         layers: [
-            tf.layers.dense({inputShape: [1024], units: 32, activation: 'relu'}),
+            tf.layers.dense({inputShape: [1024], units: 64, activation: 'relu'}),
+            tf.layers.dense({units: 32, activation: 'relu'}),
             tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
         ]
     });
-    transferNet.compile({optimizer: 'sgd', loss: 'categoricalCrossentropy'});
+    transferNet.compile({optimizer: 'adam', loss: 'categoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
-      epochs: 4,
+      epochs: 50,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
 });
