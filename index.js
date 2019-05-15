@@ -63,18 +63,12 @@ function handleFileSelect(evt) {
 }
 
 function predictHandle(){
-
-  net.classify(document.getElementById('predict_image')).then(predictions => {
-      console.log('Predictions: ');
-      console.log(predictions);
-      pred = "";
-      for(let pred of predictions){
-          let p = document.createElement('p');
-          p.innerHTML = pred.className + " " + pred.probability;
-          document.getElementById("pred_output").appendChild(p);
-      }
-  });
-
+    let c = transferNet.predict(net.infer(document.getElementById('predict_image'), 'conv_preds'));
+    let pred_class = c.argMax(1);
+    // IN ORDER TO ACCESS INTEGER VERSION: await pred_class.array()[0]
+    let pp = document.createElement('p');
+    pp.innerHTML = pred_class.toString() + " " + c.toString();
+    document.getElementById("pred_output").appendChild(pp);
 }
 
 function loadHandle(evt){
