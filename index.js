@@ -99,33 +99,33 @@ predict.addEventListener("change", ()=>{
 let train_button = document.getElementById("train_button");
 let transferNet;
 train_button.addEventListener("click", ()=>{
+    console.log('Training...')
+    console.log('Adding examples...')
+    let xArray = [];
+    let yArray = [];
+    const classifier = knnClassifier.create();
+    for (let i = 0; i <= numClasses; i++) {
+        for (let j of document.getElementById("list"+parseInt(i)).children) {
+            const activation = net.infer(j.children[0], 'conv_preds');
+            xArray.push(activation);
+            yArray.push(i);
+            classifier.addExample(activation, i);
+        }
+    }
+    const xDataset = tf.data.array(xArray);
+    const yDataset = tf.data.array(yArray);
+    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset}).batch(1);
+    console.log('Added examples');
+
     transferNet = tf.sequential({
         layers: [
             tf.layers.dense({inputShape: [1024], units: 32, activation: 'relu'}),
             tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
         ]
     });
-    console.log('Training...')
-    console.log('Adding examples...')
-    let xArray = [];
-    let yArray = [];
-    for (let i = 0; i <= numClasses; i++) {
-        for (let j of document.getElementById("list"+parseInt(i)).children) {
-            const activation = net.infer(j.children[0], 'conv_preds');
-            xArray.push(activation);
-            yArray.push(i);
-        }
-    }
-    const xDataset = tf.data.array(xArray);
-    const yDataset = tf.data.array(yArray);
-    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset});//.batch(4).shuffle(4);
-    console.log('Added examples');
-    transferNet.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
+    transferNet.compile({optimizer: 'sgd', loss: 'categoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
       epochs: 4,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
-    //     .then(() => {
-    //     console.log('Done Training');
-    // });
 });
