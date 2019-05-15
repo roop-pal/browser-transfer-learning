@@ -5,6 +5,9 @@
   </head>
 
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+
   <script
     src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -12,11 +15,11 @@
   <script src="semantic/dist/semantic.min.js"></script>
 
 
-  
+
 
   <body>
       <div class="ui container">
-          <h2 class="ui dividing header" style="padding:10px">Transfer Learning: Create Classifier</h2>
+          <h1 class="ui dividing header" style="padding:10px">Transfer Learning: Create Classifier</h1>
 
           <div class="ui active inverted dimmer" id="loading_screen">
               <div class="ui text loader">Loading Models</div>
@@ -24,35 +27,60 @@
           <p></p>
 
           <input type="file" id="train", style="display: none;"></input>
-          <button id="addClass" class="ui red basic button" style="width:100%">Add Class</button>
-          
+          <button id="addClass" class="ui red button" style="width:100%">Add Class</button>
+
           <br />
             <br />
 
 
-          <table id="trainingData" style="width:100%" border="1" class="ui celled table">
+          <!-- <table id="trainingData" style="width:100%" class="train-table"> -->
+          <table id="trainingData" style="width:100%" border="3" class="ui celled inverted table">
               <tr>
                 <td>
-                    <input type="file" id="files-0" name="files[]" multiple/>
+                    <a class="ui blue ribbon label">Training Data</a>
+                    <br />
+                    <br />
+                    <input type="file" class="files-btn" id="files-0" name="files[]" multiple/>
+                    <br>
                     <output id="list0"></output>
                 </td>
-              </tr>  
+              </tr>
               <tr>
                   <td>
+                      <a class="ui green ribbon label">Predictions</a>
+
                       <div id="predict-0" class="col" classname="col"></div>
                   </td>
-                </tr>              
+                  <p> </p>
+                </tr>
           </table>
 
           <br />
 
           <div class="ui buttons" style="width: 100%">
-            <button id='train_button' class="ui teal basic button">Train</button>
-            <button id="load_model"class="ui blue basic button">Load Images For Prediction</button>
-            <button id="pred_button" class="ui violet basic button">Predict</button>
+            <button id='train_button' class="ui teal button">Train</button>
+            <button id="load_model"class="ui blue button">Load Images For Prediction</button>
+            <button id="pred_button" class="ui violet button">Predict</button>
           </div>
 
-          <br /> 
+          <br />
+          <br />
+
+
+          <div class="ui segment" bis_skin_checked="1" style="width:25%; margin: 0 auto;">
+            <h2> Epochs </h2>
+            <input id='epoch-val' type="text" placeholder="Epochs" value="30">
+          </div>
+
+          <br />
+          <br />
+
+          <div id='loss-div' class="ui segment" style="width:25%; margin: 0 auto;">
+            <h2> Loss </h2>
+            <p id="loss-val"> You haven't trained yet! </p>
+          </div>
+
+          <br />
           <br />
           <div class="ui segment" id='loaded_pred' style="width:25%; margin: 0 auto;">
               <a class="ui red ribbon label">Predict On</a>

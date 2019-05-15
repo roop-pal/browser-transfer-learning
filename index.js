@@ -9,9 +9,10 @@ async function init() {
 
 init();
 
-
+let lossVal = document.getElementById("loss-val")
 let addClassButton = document.getElementById("addClass")
 let numClasses = 0;
+let epochVal = document.getElementById("epoch-val")
 addClassButton.addEventListener("click", ()=>{
     var tbl = document.getElementById('trainingData'); // table reference
     // open loop for each row and append cell
@@ -24,7 +25,7 @@ addClassButton.addEventListener("click", ()=>{
 function createCell2(cell, style) {
     var div = document.createElement('div'); // create DIV element
     div.addEventListener('change', handleFileSelect, false);
-    div.setAttribute('id', 'predict-'+numClasses.toString()); 
+    div.setAttribute('id', 'predict-'+numClasses.toString());
     div.setAttribute('class', style);        // set DIV class attribute
     div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
     cell.appendChild(div);                   // append DIV to the table cell
@@ -37,7 +38,7 @@ function createCell2(cell, style) {
 function createCell(cell, style) {
     var div = document.createElement('div'); // create DIV element
     //div.textContent = i;
-    div.innerHTML = '<input type="file" id="files-'+numClasses.toString()+'" name="files[]" multiple /><output id="list'+numClasses.toString()+'"></output>';
+    div.innerHTML = '<br /><br /><input type="file" class="files-btn" id="files-'+numClasses.toString()+'" name="files[]" multiple /><br><output id="list'+numClasses.toString()+'"></output>';
     div.addEventListener('change', handleFileSelect, false);
     div.setAttribute('class', style);        // set DIV class attribute
     div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
@@ -93,7 +94,7 @@ async function predictHandle(){
         img.height = 100;
         img.src = document.getElementById('loaded_pred').children[1].src;
         cell_pred_out.appendChild(img);
-    
+
         document.getElementById('loaded_pred').children[1].src = "";
         document.getElementById('loaded_pred').children[1].style.visibility = 'hidden';
     }
@@ -120,6 +121,9 @@ function loadHandle(evt){
   }
 }
 
+function logLoss(epoch, logs){
+  lossVal.innerHTML = "Epoch " + String(epoch) + ":     " + String(logs.loss)
+}
 
 document.getElementById('files-0').addEventListener('change', handleFileSelect, false);
 
@@ -138,6 +142,9 @@ let train_button = document.getElementById("train_button");
 let transferNet;
 let kClassifier;
 train_button.addEventListener("click", ()=>{
+
+    lossVal.innerHTML = "Starting..."
+
     console.log('Training...')
     console.log('Adding examples...')
     let xArray = [];
@@ -153,7 +160,7 @@ train_button.addEventListener("click", ()=>{
     }
     const xDataset = tf.data.array(xArray);
     const yDataset = tf.data.array(yArray);
-    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset}).batch(3);
+    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset}).batch(32);
     console.log('Added examples');
 
     transferNet = tf.sequential({
@@ -165,7 +172,7 @@ train_button.addEventListener("click", ()=>{
     });
     transferNet.compile({optimizer: tf.train.adam(0.001), loss: 'sparseCategoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
-      epochs: 10,
-      callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
+      epochs: Number(epochVal.value),
+      callbacks: {onEpochEnd: (epoch, logs) => logLoss(epoch, logs)}
     });
 });

@@ -1,0 +1,33 @@
+body {
+  background-color:#eaeaea;
+
+}
+
+img {
+  border-radius: 15%;
+  margin: 10px;
+}
+
+
+.files-btn {
+  /* background-color: black; */
+  color: white;
+  background-color: 333333;
+}
+
+.train-table {
+  background-color: black;
+  border-radius: 20px;
+  border-color: black;
+  padding: 20px;
+}
+
+.train-table tr {
+  padding: 20px 20px;
+  margin: 30px 0px;
+
+}
+
+.button {
+  border-radius: 15%
+}
