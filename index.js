@@ -98,18 +98,19 @@ predict.addEventListener("change", ()=>{
 
 let train_button = document.getElementById("train_button");
 let transferNet;
+let kClassifier;
 train_button.addEventListener("click", ()=>{
     console.log('Training...')
     console.log('Adding examples...')
     let xArray = [];
     let yArray = [];
-    const classifier = knnClassifier.create();
+    kClassifier = knnClassifier.create();
     for (let i = 0; i <= numClasses; i++) {
         for (let j of document.getElementById("list"+parseInt(i)).children) {
             const activation = net.infer(j.children[0], 'conv_preds');
             xArray.push(activation);
             yArray.push(i);
-            classifier.addExample(activation, i);
+            kClassifier.addExample(activation, i);
         }
     }
     const xDataset = tf.data.array(xArray);
@@ -124,9 +125,9 @@ train_button.addEventListener("click", ()=>{
             tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
         ]
     });
-    transferNet.compile({optimizer: 'adam', loss: 'categoricalCrossentropy'});
+    transferNet.compile({optimizer: tf.train.adam(0.001), loss: 'sparseCategoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
-      epochs: 50,
+      epochs: 10,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
 });
