@@ -1,18 +1,9 @@
 let net;
-
-let transferNet;
-
 async function init() {
     console.log('Loading mobilenet...');
     // Load the model.
     net = await mobilenet.load();
     console.log('Loaded model');
-    transferNet = tf.sequential({
-        layers: [
-            tf.layers.dense({inputShape: [1000], units: 32, activation: 'relu'}),
-            tf.layers.dense({units: 10, activation: 'softmax'}),
-        ]
-    });
 }
 
 init();
@@ -106,19 +97,35 @@ predict.addEventListener("change", ()=>{
 });
 
 let train_button = document.getElementById("train_button");
-
+let transferNet;
 train_button.addEventListener("click", ()=>{
+    transferNet = tf.sequential({
+        layers: [
+            tf.layers.dense({inputShape: [1024], units: 32, activation: 'relu'}),
+            tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
+        ]
+    });
     console.log('Training...')
     console.log('Adding examples...')
+    let xArray = [];
+    let yArray = [];
     for (let i = 0; i <= numClasses; i++) {
         for (let j of document.getElementById("list"+parseInt(i)).children) {
-            console.log(j.children[0]);
             const activation = net.infer(j.children[0], 'conv_preds');
-
-            // Pass the intermediate activation to the classifier.
-
-            transferNet.addExample(activation, i);
+            xArray.push(activation);
+            yArray.push(i);
         }
     }
+    const xDataset = tf.data.array(xArray);
+    const yDataset = tf.data.array(yArray);
+    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset});//.batch(4).shuffle(4);
     console.log('Added examples');
+    transferNet.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
+    const history = transferNet.fitDataset(xyDataset, {
+      epochs: 4,
+      callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
+    });
+    //     .then(() => {
+    //     console.log('Done Training');
+    // });
 });
