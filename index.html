@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Roop Pal</title>
+    <title>Browser Transfer Learning</title>
   </head>
 
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
@@ -11,20 +11,47 @@
     crossorigin="anonymous"></script>
   <script src="semantic/dist/semantic.min.js"></script>
 
+
+  
+
   <body>
-    <input type="file" id="train", style="display: none;"></input>
-    <button id="addClass" class="ui red basic button">Add Class</button>
-    <table id="trainingData" style="width:100%" border="1">
-      <tr>
-        <td><input type="file" id="files-0" name="files[]" multiple />
-          <output id="list0"></output></td>
-      </tr>
-    </table>
+      <div class="ui container">
+          <h2 class="ui dividing header" style="padding:10px">Transfer Learning: Create Classifier</h2>
+
+          <div class="ui active inverted dimmer" id="loading_screen">
+              <div class="ui text loader">Loading Models</div>
+          </div>
+          <p></p>
+
+          <input type="file" id="train", style="display: none;"></input>
+          <button id="addClass" class="ui red basic button" style="width:100%">Add Class</button>
+          
+          <br />
+            <br />
 
 
-    <button id='train_button' class="ui teal basic button">Train</button>
-    <button id="load_model"class="ui blue basic button">Load Images For Prediction</button>
-    <button id="pred_button" class="ui violet basic button">Predict</button>
+          <table id="trainingData" style="width:100%" border="1" class="ui celled table">
+              <tr>
+                <td>
+                    <input type="file" id="files-0" name="files[]" multiple/>
+                    <output id="list0"></output>
+                  </div>
+                </td>
+              </tr>
+          </table>
+
+          <br />
+
+          <div class="ui buttons" style="width: 100%">
+            <button id='train_button' class="ui teal basic button">Train</button>
+            <button id="load_model"class="ui blue basic button">Load Images For Prediction</button>
+            <button id="pred_button" class="ui violet basic button">Predict</button>
+          </div>
+
+
+      </div>
+
+
 
     <input type="file" id="predict", style="display: none;"></input>
     <br>

@@ -3,7 +3,8 @@ async function init() {
     console.log('Loading mobilenet...');
     // Load the model.
     net = await mobilenet.load();
-    console.log('Loaded model');
+    var elem = document.getElementById("loading_screen");
+    elem.parentNode.removeChild(elem);
 }
 
 init();
