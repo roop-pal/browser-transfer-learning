@@ -107,25 +107,43 @@ train_button.addEventListener("click", ()=>{
     for (let i = 0; i <= numClasses; i++) {
         for (let j of document.getElementById("list"+parseInt(i)).children) {
             const activation = net.infer(j.children[0], 'conv_preds');
-            xArray.push(activation);
+            xArray.push(activation.dataSync());
             yArray.push(i);
             classifier.addExample(activation, i);
         }
     }
     const xDataset = tf.data.array(xArray);
     const yDataset = tf.data.array(yArray);
-    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset}).batch(1);
+    const xyDataset = tf.data.zip({xs: xDataset, ys: yDataset}).batch(3);
     console.log('Added examples');
 
     transferNet = tf.sequential({
         layers: [
-            tf.layers.dense({inputShape: [1024], units: 32, activation: 'relu'}),
+            tf.layers.dense({inputShape: [1024], units: 50, activation: 'relu'}),
+            // tf.layers.dense({units: 12, activation: 'relu'}),
+            // tf.layers.dense({units: 89, activation: 'relu'}),
             tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
         ]
     });
-    transferNet.compile({optimizer: 'sgd', loss: 'categoricalCrossentropy'});
+    transferNet.compile({optimizer: 'adam', loss: 'sparseCategoricalCrossentropy'});
     const history = transferNet.fitDataset(xyDataset, {
-      epochs: 4,
+      epochs: 5,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
+
+
+    // transferNet1 = tf.sequential({
+    //     layers: [
+    //         tf.layers.dense({inputShape: [1024], units: 50, activation: 'relu'}),
+    //         // tf.layers.dense({units: 12, activation: 'relu'}),
+    //         // tf.layers.dense({units: 89, activation: 'relu'}),
+    //         tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
+    //     ]
+    // });
+    // transferNet1.compile({optimizer: 'adam', loss: 'sparseCategoricalCrossentropy'});
+    // const history2 = transferNet1.fitDataset(xyDataset, {
+    //   epochs: 5,
+    //   callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
+    // });
+
 });
