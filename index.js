@@ -130,20 +130,4 @@ train_button.addEventListener("click", ()=>{
       epochs: 5,
       callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
     });
-
-
-    // transferNet1 = tf.sequential({
-    //     layers: [
-    //         tf.layers.dense({inputShape: [1024], units: 50, activation: 'relu'}),
-    //         // tf.layers.dense({units: 12, activation: 'relu'}),
-    //         // tf.layers.dense({units: 89, activation: 'relu'}),
-    //         tf.layers.dense({units: numClasses + 1, activation: 'softmax'})
-    //     ]
-    // });
-    // transferNet1.compile({optimizer: 'adam', loss: 'sparseCategoricalCrossentropy'});
-    // const history2 = transferNet1.fitDataset(xyDataset, {
-    //   epochs: 5,
-    //   callbacks: {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
-    // });
-
 });
