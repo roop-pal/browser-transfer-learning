@@ -35,9 +35,13 @@
                 <td>
                     <input type="file" id="files-0" name="files[]" multiple/>
                     <output id="list0"></output>
-                  </div>
                 </td>
-              </tr>
+              </tr>  
+              <tr>
+                  <td>
+                      <div id="predict-0" class="col" classname="col"></div>
+                  </td>
+                </tr>              
           </table>
 
           <br />
@@ -48,16 +52,19 @@
             <button id="pred_button" class="ui violet basic button">Predict</button>
           </div>
 
+          <br /> 
+          <br />
+          <div class="ui segment" id='loaded_pred' style="width:25%; margin: 0 auto;">
+              <a class="ui red ribbon label">Predict On</a>
+              <img id = 'predict_image' src="">
+          </div>
+
 
       </div>
 
 
 
     <input type="file" id="predict", style="display: none;"></input>
-    <br>
-    <img id = 'predict_image' src="">
-    <br>
-
     <div id="pred_output"></div>
     <br>
 

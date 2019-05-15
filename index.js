@@ -17,7 +17,19 @@ addClassButton.addEventListener("click", ()=>{
     // open loop for each row and append cell
     numClasses++;
     createCell(tbl.rows[0].insertCell(tbl.rows[0].cells.length), 'col');
+    createCell2(tbl.rows[1].insertCell(tbl.rows[1].cells.length), 'col');
 });
+
+// create DIV element and append to the table cell
+function createCell2(cell, style) {
+    var div = document.createElement('div'); // create DIV element
+    div.addEventListener('change', handleFileSelect, false);
+    div.setAttribute('id', 'predict-'+numClasses.toString()); 
+    div.setAttribute('class', style);        // set DIV class attribute
+    div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
+    cell.appendChild(div);                   // append DIV to the table cell
+}
+
 
 // '<input type="file" id="files" name="files[]" multiple /><output id="list"></output>'
 
@@ -63,18 +75,28 @@ function handleFileSelect(evt) {
     }
 }
 
-function predictHandle(){
+let predictedClass;
+let pred_class;
+async function predictHandle(){
+    let c = transferNet.predict(net.infer(document.getElementById('predict_image'), 'conv_preds'));
+    pred_class = c.argMax(1);
+    predictedClass = await pred_class.array();
+    //let pp = document.createElement('p');
+    //pp.innerHTML = pred_class.toString() + " " + c.toString();
+    //document.getElementById("pred_output").appendChild(pp);
 
-  net.classify(document.getElementById('predict_image')).then(predictions => {
-      console.log('Predictions: ');
-      console.log(predictions);
-      pred = "";
-      for(let pred of predictions){
-          let p = document.createElement('p');
-          p.innerHTML = pred.className + " " + pred.probability;
-          document.getElementById("pred_output").appendChild(p);
-      }
-  });
+    if(document.getElementById('loaded_pred').children[1].style.visibility != 'hidden'){
+        let cell_pred_out = document.getElementById("predict-" + predictedClass);
+        console.log(cell_pred_out);
+        var img = document.createElement("img");
+        img.width = 100;
+        img.height = 100;
+        img.src = document.getElementById('loaded_pred').children[1].src;
+        cell_pred_out.appendChild(img);
+    
+        document.getElementById('loaded_pred').children[1].src = "";
+        document.getElementById('loaded_pred').children[1].style.visibility = 'hidden';
+    }
 
 }
 
@@ -85,9 +107,11 @@ function loadHandle(evt){
 
   reader.onloadend = function () {
       console.log("loaded");
+      img.id = "predict_image";
       img.src = reader.result;
       img.width = 100;
       img.height = 100;
+      img.style.visibility = 'visible';
 
   }
 
@@ -110,34 +134,6 @@ load_button.addEventListener("click", ()=>{
     document.getElementById('predict').click();
 });
 
-
-
-/*
-predict.addEventListener("change", ()=>{
-    var file    = document.querySelector('input[type=file]').files[0];
-    var reader  = new FileReader();
-    var img = document.getElementById('predict_image');
-
-    reader.onloadend = function () {
-        img.src = reader.result;
-        net.classify(img).then(predictions => {
-            console.log('Predictions: ');
-            console.log(predictions);
-            pred = "";
-            for(let pred of predictions){
-                let p = document.createElement('p');
-                p.innerHTML = pred.className + " " + pred.probability;
-                document.getElementById("pred_output").appendChild(p);
-            }
-        });
-    }
-
-    if (file) {
-        reader.readAsDataURL(file); //reads the data as a URL
-    }
-
-});
-*/
 let train_button = document.getElementById("train_button");
 let transferNet;
 let kClassifier;
