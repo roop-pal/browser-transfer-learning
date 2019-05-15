@@ -5,9 +5,17 @@
   </head>
 
   <body>
-    <button id='train_button'>Train</button>
     <input type="file" id="train", style="display: none;"></input>
+    <button id="addClass">Add Class</button>
+    <table id="trainingData" style="width:100%" border="1">
+      <tr>
+        <td><input type="file" id="files-0" name="files[]" multiple />
+          <output id="list0"></output></td>
+      </tr>
+    </table>
 
+
+    <button id='train_button'>Train</button>
     <button id="pred_button">Predict</button>
     <input type="file" id="predict", style="display: none;"></input>
     <br>
@@ -15,7 +23,8 @@
     <br>
 
     <div id="pred_output"></div>
-    <img id="img" crossOrigin src="https://i.imgur.com/JlUvsxa.jpg" width=227 height=227/>
+    <br>
+
   </body>
 
   <!-- zip.js  -->
@@ -24,6 +33,7 @@
   <!-- tensorflow-related  -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
+  <script src="https://unpkg.com/@tensorflow-models/knn-classifier"></script>
   <script src="index.js"></script>
 
 </html>
