@@ -21,6 +21,8 @@ train_button.addEventListener("click", ()=>{
     document.getElementById('train').click();
 });
 
+let varname;
+let z;
 train.addEventListener("change", ()=>{
     var zip = new JSZip();
     // read zip file
@@ -28,8 +30,11 @@ train.addEventListener("change", ()=>{
        .then(function(zip) {
            // process ZIP file content here
 
+           z = zip;
+
            // iterate through
-           console.log(zip.files)
+           console.log(zip.files['bb/bb1.jpg']._data.compressedContent)
+           varname = zip.files['bb/bb1.jpg']._data.compressedContent;
 
            // alert("OK")
        }, function() {alert("Not a valid zip file")});
