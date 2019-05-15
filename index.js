@@ -62,15 +62,56 @@ function handleFileSelect(evt) {
     }
 }
 
+function predictHandle(){
+
+  net.classify(document.getElementById('predict_image')).then(predictions => {
+      console.log('Predictions: ');
+      console.log(predictions);
+      pred = "";
+      for(let pred of predictions){
+          let p = document.createElement('p');
+          p.innerHTML = pred.className + " " + pred.probability;
+          document.getElementById("pred_output").appendChild(p);
+      }
+  });
+
+}
+
+function loadHandle(evt){
+  var file    = evt.target.files[0];
+  var reader  = new FileReader();
+  var img = document.getElementById('predict_image');
+
+  reader.onloadend = function () {
+      console.log("loaded");
+      img.src = reader.result;
+      img.width = 100;
+      img.height = 100;
+
+  }
+
+  if (file) {
+      reader.readAsDataURL(file); //reads the data as a URL
+  }
+}
+
+
 document.getElementById('files-0').addEventListener('change', handleFileSelect, false);
 
-let predict = document.getElementById("predict");
-let predict_button = document.getElementById("pred_button")
+let predict_button = document.getElementById("pred_button");
+predict_button.addEventListener("click", predictHandle, false);
 
-predict_button.addEventListener("click", ()=>{
+let predict = document.getElementById("predict");
+predict.addEventListener('change', loadHandle, false);
+
+let load_button = document.getElementById("load_model");
+load_button.addEventListener("click", ()=>{
     document.getElementById('predict').click();
 });
 
+
+
+/*
 predict.addEventListener("change", ()=>{
     var file    = document.querySelector('input[type=file]').files[0];
     var reader  = new FileReader();
@@ -78,7 +119,6 @@ predict.addEventListener("change", ()=>{
 
     reader.onloadend = function () {
         img.src = reader.result;
-        // Load the model.
         net.classify(img).then(predictions => {
             console.log('Predictions: ');
             console.log(predictions);
@@ -90,12 +130,13 @@ predict.addEventListener("change", ()=>{
             }
         });
     }
+
     if (file) {
         reader.readAsDataURL(file); //reads the data as a URL
     }
 
 });
-
+*/
 let train_button = document.getElementById("train_button");
 let transferNet;
 let kClassifier;
