@@ -1,7 +1,10 @@
 # Authors
 Robby Costales (rsc2156)
+
 Vivek Kumar (vk2425)
+
 Roop Pal (rpsomething)
+
 
 # Browser Based Transfer Learning
 An application for image classification which brings state-of-the-art machine learning algorithms to the public. This is accomplished using tensorflowjs and transfer learning.
