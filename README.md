@@ -12,7 +12,7 @@ https://youtu.be/oXccZQUdIDo
 An application for image classification which brings state-of-the-art machine learning algorithms to the public. This is accomplished using tensorflowjs and transfer learning.
 
 # Running
-To run this website locally, run in the current directory:
+To run this website locally, run in the directory containing index.html:
 
 `python -m http.server`
 
